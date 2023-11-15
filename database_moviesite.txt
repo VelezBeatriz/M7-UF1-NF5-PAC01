@@ -1,5 +1,6 @@
-CREATE DATABASE IF NOT EXISTS moviesite;
+//Queries para cuando se borra la database de los ejercicios
 
+CREATE DATABASE IF NOT EXISTS moviesite;
 
 CREATE TABLE movie (
         movie_id        INTEGER UNSIGNED  NOT NULL AUTO_INCREMENT, 

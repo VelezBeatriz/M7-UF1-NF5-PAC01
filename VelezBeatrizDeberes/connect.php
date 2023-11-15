@@ -5,8 +5,8 @@ define( 'ADMIN_USER', 'root');
 define( 'ADMIN_PASSWORD', 'root');
 define( 'DATABASE_NAME', 'moviesite');
 define( 'URL', $_SERVER['REQUEST_URI']);
-define( 'URL_SITE', "http://localhost:8080/Deberes/");
-define( 'URL_RETURN', "http://localhost:8080/Deberes/index.php");
+define( 'URL_SITE', "http://localhost:8080/VelezBeatrizDeberes/");
+define( 'URL_RETURN', "http://localhost:8080/VelezBeatrizDeberes/index.php");
 
 
 //Conexión a la BBDD
