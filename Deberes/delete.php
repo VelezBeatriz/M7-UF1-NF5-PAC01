@@ -8,7 +8,9 @@
 </head>
 <body>
     <?php
-    
+     $query = 'DELETE FROM movie 
+     WHERE
+         movie_id = ' . $_GET['id'];
     ?>
     <a href="<?php echo URL_RETURN; ?>">Return to administration panel</a>
     
