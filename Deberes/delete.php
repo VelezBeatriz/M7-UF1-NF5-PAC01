@@ -8,9 +8,7 @@
 </head>
 <body>
     <?php
-    //  $query = 'DELETE FROM movie 
-    //  WHERE
-    //      movie_id = ' . $_GET['id'];
+
     if(isset($_GET['data'])):
         if( ($_GET['data'] == 'movie') || ($_GET['data'] == 'people')):
             //I'm a movie or persona AND I'm an action
@@ -24,16 +22,61 @@
                         $data = extractData($query);
                         if($data->num_rows == 0):
                             echo "<p>Sorry, these data don't exist...</p>";
+                            ?>
+                            <a href="<?php echo URL_RETURN; ?>">Return to administration panel</a>
+                            <?php
                         else:
                             //THIS ID EXIST                                                
                             switch($_GET['data']):
                                 //I'M A MOVIE
                                 case 'movie':
-                                    echo 'movie';
+                                     //Query select 
+                                        $query_movie = "SELECT movie_name, movie_year FROM  movie WHERE movie_id = $id";
+                                        //Call this function to extract data
+                                        $data = extractData($query_movie);
+                                        $row = $data->fetch_assoc();
+                                        extract($row);    
+                                    ?>
+                                        <p>Are you sure you want to delete the movie <?php echo $row['movie_name'] . " - " . $row['movie_year']  ?>?</p>
+                                        <a href="<?php echo URL_RETURN; ?>">No! That was a mistake...</a>
+                                        <a href="<?php echo URL; ?>&delete=true">Yes! This movie's so ancient</a>
+                                        <?php
+                                        if(isset($_GET['delete'])){
+                                            if($_GET['delete']){
+                                                  $query = "DELETE FROM movie WHERE movie_id = $id";
+                                                  executeQuery($query);
+                                                ?>
+                                                    </br>
+                                                    <p>Movie deleted...</p>
+                                                    <a href="<?php echo URL_RETURN; ?>">Return to administration panel</a>
+                                                <?php
+                                            }
+                                        }
                                     break;
                                 //I'M A PERSON
                                 case 'people':
-                                    echo 'people';
+                                        //Query select 
+                                        $query_people = "SELECT people_fullname FROM  people WHERE people_id = $id";
+                                        //Call this function to extract data
+                                        $data = extractData($query_people);
+                                        $row = $data->fetch_assoc();
+                                        extract($row);    
+                                    ?>
+                                        <p>Are you sure you want to delete <?php echo $row['people_fullname'] ?>?</p>
+                                        <a href="<?php echo URL_RETURN; ?>">No! That was a mistake...</a>
+                                        <a href="<?php echo URL; ?>&delete=true">Yes! This person isn't fancy</a>
+                                        <?php
+                                        if(isset($_GET['delete'])){
+                                            if($_GET['delete']){
+                                                    $query = "DELETE FROM people WHERE people_id = $id";
+                                                    executeQuery($query);
+                                                ?>
+                                                    </br>
+                                                    <p>Person deleted...</p>
+                                                    <a href="<?php echo URL_RETURN; ?>">Return to administration panel</a>
+                                                <?php
+                                            }
+                                        }
                                     break;                             
                             endswitch;                    
                         endif;
@@ -49,53 +92,6 @@
     else:
         errorFound();
     endif;
-    ?>
-
-    <br/>
-    <a href="<?php echo URL_RETURN; ?>">Return to administration panel</a>
-    
+    ?>    
 </body>
 </html>
-
-<?php
-// if (!isset($_GET['do']) || $_GET['do'] != 1) {
-//     switch ($_GET['type']) {
-//     case 'movie':
-//         echo 'Are you sure you want to delete this movie?<br/>';
-//         break;
-//     case 'people':
-//         echo 'Are you sure you want to delete this person?<br/>';
-//         break;
-//     } 
-//     echo '<a href="' . $_SERVER['REQUEST_URI'] . '&do=1">yes</a> '; 
-//     echo 'or <a href="admin.php">no</a>';
-// } else {
-//     switch ($_GET['type']) {
-//     case 'people':
-//         $query = 'UPDATE movie SET
-//                 movie_leadactor = 0 
-//             WHERE
-//                 movie_leadactor = ' . $_GET['id'];
-//         $result = mysqli_query($db, $query) or die(mysqli_error($db));
-
-//         $query = 'DELETE FROM people 
-//             WHERE
-//                 people_id = ' . $_GET['id'];
-//         $result = mysqli_query($db, $query) or die(mysqli_error($db));
-// 
-// <p style="text-align: center;">Your person has been deleted.
-// <a href="movie_index.php">Return to Index</a></p>
-
-//         break;
-//     case 'movie':
-//         $query = 'DELETE FROM movie 
-//             WHERE
-//                 movie_id = ' . $_GET['id'];
-//         $result = mysqli_query($db, $query) or die(mysqli_error($db));
-// <p style="text-align: center;">Your movie has been deleted.
-// <a href="movie_index.php">Return to Index</a></p>
-
-//         break;
-//     }
-// }
-?>

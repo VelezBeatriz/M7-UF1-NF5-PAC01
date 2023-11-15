@@ -1,7 +1,6 @@
 <?php
 //Error's quote
 $error = 'Error de Connexión número (' . $bbdd->connect_errno . ') ' . $bbdd->connect_error;
-
 //FUNCTIOS QUERIES
 //This function execute a query
     function executeQuery($query){
