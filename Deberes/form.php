@@ -130,6 +130,7 @@ endif;
 
 
     ?>
+    <br/>
     <a href="<?php echo URL_RETURN; ?>">Return to administration panel</a>
 
 

@@ -2,29 +2,30 @@
 //Error's quote
 $error = 'Error de Connexión número (' . $bbdd->connect_errno . ') ' . $bbdd->connect_error;
 
+//FUNCTIOS QUERIES
 //This function execute a query
-function executeQuery($query){
-    //Call vars
-    global $bbdd;
-    global $error;
+    function executeQuery($query){
+        //Call vars
+        global $bbdd;
+        global $error;
 
-    //Execute query
-    $data = @$bbdd->query($query) or die($error);
-}
-//This function extract Data
-function extractData($query){
+        //Execute query
+        $data = @$bbdd->query($query) or die($error);
+    }
+    //This function extract Data
+    function extractData($query){
 
-     //Call vars
-    global $bbdd;
-    global $error;
+        //Call vars
+        global $bbdd;
+        global $error;
 
-    //Execute query and reset
-    $data = @$bbdd->query($query) or die($error);
-    $data->data_seek(0);
+        //Execute query and reset
+        $data = @$bbdd->query($query) or die($error);
+        $data->data_seek(0);
 
-    //Return data
-    return $data;
-}
+        //Return data
+        return $data;
+    }
 
 //FUNCTIONS TO ADD DATA
     //This function add a movie
@@ -70,16 +71,18 @@ function extractData($query){
         $year = $data['movie_year'];
         $actor = $data['movie_actor'];
         $director = $data['movie_director'];
-        $id = $data['id'];
+        $id = $data['movie_id'];
 
         $query = "UPDATE movie SET
-        movie_name = ' $name' ,
+        movie_name = '$name' ,
         movie_year = '$year',
-        movie_type = $type,
-        movie_leadactor = $actor,
-        movie_director = $director, 
+        movie_type = '$type',
+        movie_leadactor = '$actor',
+        movie_director = '$director' 
         WHERE
         movie_id = $id";
+        executeQuery($query);
+        return true;   
     }
     //This function edit a person
     function edit_people($data){
@@ -94,6 +97,7 @@ function extractData($query){
         people_isdirector = '$director'
         WHERE
         people_id = $id";
+
         executeQuery($query);
         return true;
     }
@@ -112,15 +116,24 @@ function extractData($query){
             $data = extractData($query);
             $row = $data->fetch_assoc();
             extract($row);
-            echo '<pre>';
-            var_dump($row);
-            echo '</pre>';
-            // echo $is_director == '0' ? 'selected' : ''
+      
+            $name = $row['movie_name'];
+            $type = $row['movie_type'];
+            $year = $row['movie_year'];
+            $actor = $row['movie_leadactor'];
+            $director = $row['movie_director'];
+
+        } else {
+            $name = '';
+            $type = '';
+            $year = '';
+            $actor = '';
+            $director = '';
         }
         ?>
         <form action="<?php echo URL ?>" method="POST">
                                             <label for="movie_name">Movie name</label>
-                                            <input type="text" id="movie_name" name="movie_name" required>
+                                            <input type="text" id="movie_name" name="movie_name" value="<?php echo $name ?>"required>
                                             </br>
                                             <label for="movie_type">Movie type</label>
                                             <select id="movie_type" name="movie_type" required>
@@ -137,7 +150,7 @@ function extractData($query){
                                                         //Extract row
                                                         extract($row_movie);
                                                         ?>
-                                                        <option value="<?php echo $row_movie['movietype_id']?>" ><?php echo $row_movie['movietype_label'] ?></option>
+                                                        <option value="<?php echo $row_movie['movietype_id']?>" <?php echo $type ==  $row_movie['movietype_id'] ? 'selected' : '' ?> ><?php echo $row_movie['movietype_label'] ?></option>
                                                         <?php
                                                     endwhile;
                                                 ?>
@@ -149,7 +162,7 @@ function extractData($query){
                                                     // populate the select options with years
                                                     for ($yr = date("Y"); $yr >= 1970; $yr--) {
                                                         ?>
-                                                        <option value="<?php echo $yr ?>"><?php echo $yr ?></option>
+                                                        <option value="<?php echo $yr ?>" <?php echo $year ==  $yr ? 'selected' : '' ?>><?php echo $yr ?></option>
                                                         <?php
                                                     }
                                                 ?>
@@ -172,7 +185,7 @@ function extractData($query){
                                                         //Extract row
                                                         extract($row_actor);
                                                         ?>
-                                                        <option value="<?php echo $row_actor['people_id']?>"><?php echo $row_actor['people_fullname'] ?></option>
+                                                        <option value="<?php echo $row_actor['people_id']?>" <?php echo $actor ==  $row_actor['people_id'] ? 'selected' : '' ?>><?php echo $row_actor['people_fullname'] ?></option>
                                                         <?php
                                                     endwhile;
                                                 ?>
@@ -195,13 +208,20 @@ function extractData($query){
                                                         //Extract row
                                                         extract($row_director);
                                                         ?>
-                                                        <option value="<?php echo $row_director['people_id']?>"><?php echo $row_director['people_fullname'] ?></option>
+                                                        <option value="<?php echo $row_director['people_id']?>" <?php echo $director ==  $row_director['people_id'] ? 'selected' : '' ?> ><?php echo $row_director['people_fullname'] ?></option>
                                                         <?php
                                                     endwhile;
                                                 ?>
                                             </select>
                                             </br>
-                                            <input type="submit" value="Añadir" name="enviar_movie">
+                                            <?php
+                                            if ($_GET['action'] == 'edit'):
+                                            ?>
+                                                <input type="hidden" value="<?php echo $id ?> " name="movie_id" />
+                                            <?php
+                                            endif;
+                                            ?>
+                                                <input type="submit" value="<?php echo ucfirst($_GET['action'])?>" name="enviar_movie">
                                         </form>
         <?php
     }
